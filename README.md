@@ -442,3 +442,62 @@ echo "Build and installation complete!"
 - **Version Control**: Keeps .git directories intact for easy updates.
 
 Let me know if you need further refinements!
+
+---
+
+Good question! To ensure that xmonad is found when you log in via a TTY and run `startx`, the `PATH` configuration in your .bashrc must be properly applied to the environment used by `startx`. Here's how to verify and ensure it works:
+
+---
+
+### **Why It Might Not Work**
+- The .bashrc file is typically sourced only for **interactive** shell sessions. When you log in and run `startx`, the shell might not source .bashrc automatically.
+- If `$HOME/.local/bin` is not in the `PATH` for non-interactive sessions, `startx` might fail to find xmonad.
+
+---
+
+### **Solution**
+To ensure `$HOME/.local/bin` is always in your `PATH`, you should add the `export PATH=$HOME/.local/bin:$PATH` line to your `~/.profile` or `~/.bash_profile` instead of (or in addition to) .bashrc. These files are sourced for **login shells**, which includes TTY logins.
+
+1. **Edit `~/.profile` or `~/.bash_profile`**:
+   Open `~/.profile` (or `~/.bash_profile` if it exists) and add the following line:
+
+   ```bash
+   export PATH=$HOME/.local/bin:$PATH
+   ```
+
+2. **Ensure `~/.profile` is Sourced**:
+   If you're using `~/.bash_profile`, make sure it sources `~/.profile` (this is standard on many systems). Add this line to `~/.bash_profile` if it's not already there:
+
+   ```bash
+   [ -f ~/.profile ] && . ~/.profile
+   ```
+
+3. **Test the Configuration**:
+   - Log out of your TTY session.
+   - Log back in via TTY.
+   - Run `echo $PATH` to confirm that `$HOME/.local/bin` is in your `PATH`.
+   - Run `which xmonad` to confirm that xmonad is found.
+
+4. **Run `startx`**:
+   If the above steps are correct, `startx` should now find xmonad without any issues.
+
+---
+
+### **Alternative: Explicitly Specify xmonad in `.xinitrc`**
+If you want to be extra cautious, you can explicitly specify the full path to xmonad in your `~/.xinitrc` file:
+
+```bash
+#!/bin/bash
+exec /home/holmen1/.local/bin/xmonad
+```
+
+This ensures that `startx` will always find xmonad, regardless of the `PATH`.
+
+---
+
+### **Summary**
+- Add `export PATH=$HOME/.local/bin:$PATH` to `~/.profile` or `~/.bash_profile` for login shells.
+- Test the `PATH` after logging in via TTY to ensure it includes `$HOME/.local/bin`.
+- Optionally, specify the full path to xmonad in `~/.xinitrc` for extra reliability.
+
+Let me know if you need help testing or tweaking this further! 😊
