@@ -30,11 +30,14 @@ update_repo() {
 update_repo "xmonad" "https://github.com/xmonad/xmonad"
 update_repo "xmonad-contrib" "https://github.com/xmonad/xmonad-contrib"
 
-# Build and install xmonad
-echo "Building and installing xmonad..."
+# Build and install xmonad and xmonad-contrib
+echo "Building and installing xmonad and xmonad-contrib..."
 cabal update
-cabal build xmonad
-cabal install xmonad --installdir=$INSTALL_DIR --overwrite-policy=always
+# installs the libraries for recompilation
+cabal install --installdir=$INSTALL_DIR --overwrite-policy=always --package-env=$HOME/.config/xmonad --lib xmonad xmonad-contrib
+# installs the binary for execution
+cabal install --installdir=$INSTALL_DIR --overwrite-policy=always --package-env=$HOME/.config/xmonad xmonad
+
 
 # Ensure the install directory is in PATH
 if ! echo $PATH | grep -q "$INSTALL_DIR"; then
