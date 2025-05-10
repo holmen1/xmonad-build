@@ -4,7 +4,3 @@ dist-newstyle/
 # Ignore all other files in build directories except .git
 xmonad/*
 xmonad-contrib/*
-
-# Allow .git directories to be tracked
-!xmonad/.git
-!xmonad-contrib/.git
